@@ -2,22 +2,146 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>One84</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One84 | Mind the Gap</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400&family=Bodoni+Moda:opsz,wght@6-96,400&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background-color: #FFFFFF; /* Pure Gallery White */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        .container {
+            text-align: center;
+            max-width: 400px;
+            animation: fadeIn 1.5s ease-out; /* "Spring" entrance feel */
+        }
+
+        .logo {
+            width: 220px; /* Precise sizing for intrigue */
+            margin-bottom: 60px;
+            filter: drop-shadow(0px 10px 20px rgba(0,0,0,0.05));
+        }
+
+        h1 {
+            font-size: 18px;
+            font-weight: 400;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin: 0 0 10px 0;
+            color: #000;
+        }
+
+        .subhead {
+            font-size: 13px;
+            font-weight: 200;
+            color: #708090; /* Muted Slate Grey */
+            letter-spacing: 0.05em;
+            margin-bottom: 50px;
+        }
+
+        /* The Ghost Input (16s Style) */
+        input[type="email"] {
+            border: none;
+            border-bottom: 1px solid #000;
+            background: transparent;
+            padding: 10px 0;
+            width: 240px;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.4s ease;
+            color: #000;
+        }
+
+        input[type="email"]::placeholder {
+            color: rgba(0,0,0,0.3);
+            letter-spacing: 0.1em;
+        }
+
+        input[type="email"]:focus {
+            border-bottom: 1px solid #8A2BE2; /* Electric Violet */
+            width: 280px; /* Subtle expansion on focus */
+        }
+
+        /* Subtle Footnote */
+        footer {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            font-size: 11px;
+            color: rgba(0,0,0,0.35);
+            font-weight: 200;
+        }
+
+        .status-dot {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 6px;
+            height: 6px;
+            background-color: #8A2BE2; /* Electric Violet Status */
+            border-radius: 50%;
+            box-shadow: 0 0 8px #8A2BE2;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Success State Styling */
+        .success-text {
+            font-family: 'Bodoni Moda', serif;
+            color: #8A2BE2;
+            font-size: 64px;
+            letter-spacing: -2px;
+        }
+    </style>
 </head>
 <body>
-    <div class="gallery">
-        <img src="logo.png" alt="One84 Cube" class="cube">
-        <h1>Mind the Gap.</h1>
-        <p class="axis">The 18—24 Axis.</p>
-        
-        <form id="sprint-form">
-            <input type="email" placeholder="[ Join the Sprint ]" required>
-        </form>
 
-        <footer class="hint">
-            *18–24: Legally an adult. Biologically loading.
-        </footer>
+    <div class="status-dot"></div>
+
+    <div class="container" id="main-content">
+        <img src="One84Logo.png" alt="One84" class="logo">
+        
+        <h1>Mind the Gap.</h1>
+        <div class="subhead">The 18—24 Axis.</div>
+
+        <form id="sprint-form">
+            <input type="email" placeholder="[ JOIN THE SPRINT ]" required>
+        </form>
     </div>
+
+    <footer>
+        *18–24: Legally an adult. Biologically loading.
+    </footer>
+
+    <script>
+        document.getElementById('sprint-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const container = document.getElementById('main-content');
+            
+            // Fade out current content
+            container.style.transition = 'opacity 0.8s ease';
+            container.style.opacity = '0';
+            
+            setTimeout(() => {
+                // Change to the minimalist '84' success state
+                container.innerHTML = '<div class="success-text">84</div>';
+                container.style.opacity = '1';
+            }, 800);
+        });
+    </script>
 </body>
 </html>
