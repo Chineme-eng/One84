@@ -4,122 +4,198 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>One84 | Mind the Gap</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400&family=Bodoni+Moda:opsz,wght@6-96,400&display=swap" rel="stylesheet">
+    
+    <link rel="icon" href="One84 Logo.png" type="image/png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Bodoni+Moda:opsz,wght@6-96,400;6-96,500&display=swap" rel="stylesheet">
     
     <style>
         * { box-sizing: border-box; }
+        
+        :root {
+            --color-bg: #FFFFFF;
+            --color-text: #050505;
+            --color-accent: #8A2BE2; /* Electric Violet */
+            --color-muted: #94a3b8;
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
         body {
-            background-color: #FFFFFF; /* Pure Gallery White */
+            background-color: var(--color-bg);
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             font-family: 'Inter', sans-serif;
-            overflow: hidden; /* Prevent scrolling */
+            overflow: hidden;
+            color: var(--color-text);
+            /* Custom Selection Color */
+            ::selection { background: var(--color-accent); color: white; }
+        }
+
+        /* Focus Mode Wrapper */
+        body.is-focused .container > *:not(form),
+        body.is-focused footer,
+        body.is-focused .status-dot {
+            opacity: 0.3;
+            filter: blur(1px);
         }
 
         .container {
             text-align: center;
             max-width: 400px;
-            animation: fadeIn 1.5s ease-out; /* "Spring" entrance feel */
+            width: 100%;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.5s var(--ease-out-expo);
+        }
+
+        /* Staggered Animation Setup */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUpFade 1.2s var(--ease-out-expo) forwards;
         }
 
         .logo {
-            width: 220px; /* Precise sizing for intrigue */
-            margin-bottom: 60px;
-            filter: drop-shadow(0px 10px 20px rgba(0,0,0,0.05));
+            width: 180px; 
+            margin-bottom: 50px;
+            animation-delay: 0.1s;
         }
 
         h1 {
-            font-size: 18px;
+            font-family: 'Bodoni Moda', serif; /* Changed to match brand identity */
+            font-size: 28px;
             font-weight: 400;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin: 0 0 10px 0;
-            color: #000;
+            letter-spacing: -0.03em;
+            margin: 0 0 8px 0;
+            color: var(--color-text);
+            animation-delay: 0.2s;
         }
 
         .subhead {
-            font-size: 13px;
-            font-weight: 200;
-            color: #708090; /* Muted Slate Grey */
-            letter-spacing: 0.05em;
-            margin-bottom: 50px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 60px;
+            animation-delay: 0.3s;
         }
 
-        /* The Ghost Input (16s Style) */
+        /* Form Styling */
+        form {
+            width: 100%;
+            animation-delay: 0.4s;
+            position: relative;
+        }
+
         input[type="email"] {
             border: none;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid #e5e5e5;
             background: transparent;
-            padding: 10px 0;
-            width: 240px;
+            padding: 15px 0;
+            width: 100%;
             text-align: center;
             font-family: 'Inter', sans-serif;
             font-size: 14px;
+            font-weight: 400;
             outline: none;
-            transition: all 0.4s ease;
-            color: #000;
+            transition: all 0.4s var(--ease-out-expo);
+            color: var(--color-text);
+            border-radius: 0; /* Remove iOS rounded corners */
         }
 
         input[type="email"]::placeholder {
-            color: rgba(0,0,0,0.3);
-            letter-spacing: 0.1em;
+            color: rgba(0,0,0,0.2);
+            letter-spacing: 0.05em;
+            font-size: 12px;
+            transition: color 0.3s ease;
         }
 
         input[type="email"]:focus {
-            border-bottom: 1px solid #8A2BE2; /* Electric Violet */
-            width: 280px; /* Subtle expansion on focus */
+            border-bottom: 1px solid var(--color-accent);
+            transform: scale(1.05);
+        }
+        
+        input[type="email"]:focus::placeholder {
+            color: transparent; /* Hide placeholder on focus for cleaner look */
         }
 
-        /* Subtle Footnote */
+        /* Footer */
         footer {
             position: absolute;
-            bottom: 30px;
-            left: 30px;
-            font-size: 11px;
-            color: rgba(0,0,0,0.35);
-            font-weight: 200;
+            bottom: 40px;
+            font-size: 10px;
+            color: rgba(0,0,0,0.3);
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            animation: fadeIn 2s ease-out forwards;
+            width: 100%;
+            text-align: center;
+            transition: opacity 0.3s ease;
         }
 
         .status-dot {
             position: absolute;
-            top: 30px;
-            right: 30px;
-            width: 6px;
-            height: 6px;
-            background-color: #8A2BE2; /* Electric Violet Status */
+            top: 40px;
+            right: 40px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--color-accent);
             border-radius: 50%;
-            box-shadow: 0 0 8px #8A2BE2;
+            box-shadow: 0 0 15px var(--color-accent);
+            animation: pulse 3s infinite;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        /* Success State */
+        .success-text {
+            font-family: 'Bodoni Moda', serif;
+            color: var(--color-accent);
+            font-size: 84px; /* The number represents the brand */
+            letter-spacing: -4px;
+            line-height: 1;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: popIn 0.8s var(--ease-out-expo) forwards;
+        }
+
+        /* Keyframes */
+        @keyframes slideUpFade {
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Success State Styling */
-        .success-text {
-            font-family: 'Bodoni Moda', serif;
-            color: #8A2BE2;
-            font-size: 64px;
-            letter-spacing: -2px;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes popIn {
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body>
 
-    <div class="status-dot"></div>
+    <div class="status-dot" title="Network Active"></div>
 
     <div class="container" id="main-content">
-        <img src="One84%20Logo.png" alt="One84" class="logo">
+        <img src="One84 Logo.png" alt="One84" class="logo reveal">
         
-        <h1>Mind the Gap.</h1>
-        <div class="subhead">The 18—24 Axis.</div>
+        <h1 class="reveal">Mind the Gap.</h1>
+        <div class="subhead reveal">The 18—24 Axis</div>
 
-        <form id="sprint-form">
-            <input type="email" placeholder="[ JOIN THE SPRINT ]" required>
+        <form id="sprint-form" class="reveal">
+            <input type="email" id="email-input" placeholder="[ JOIN THE SPRINT ]" autocomplete="off" required>
         </form>
     </div>
 
@@ -128,19 +204,41 @@
     </footer>
 
     <script>
-        document.getElementById('sprint-form').addEventListener('submit', function(e) {
+        const input = document.getElementById('email-input');
+        const body = document.body;
+        const form = document.getElementById('sprint-form');
+        const container = document.getElementById('main-content');
+
+        // Focus Mode Logic
+        input.addEventListener('focus', () => {
+            body.classList.add('is-focused');
+        });
+
+        input.addEventListener('blur', () => {
+            body.classList.remove('is-focused');
+        });
+
+        // Submission Logic
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
-            const container = document.getElementById('main-content');
             
-            // Fade out current content
-            container.style.transition = 'opacity 0.8s ease';
+            // 1. Unfocus visual state
+            body.classList.remove('is-focused');
+            input.blur();
+
+            // 2. Fade out container elements
+            container.style.transform = 'translateY(-10px)';
             container.style.opacity = '0';
             
             setTimeout(() => {
-                // Change to the minimalist '84' success state
+                // 3. Inject Success State
                 container.innerHTML = '<div class="success-text">84</div>';
+                container.style.transform = 'translateY(0)';
                 container.style.opacity = '1';
-            }, 800);
+                
+                // Optional: Change background slightly to indicate success? 
+                // Kept white for purity, but could fade to #fafafa.
+            }, 600);
         });
     </script>
 </body>
