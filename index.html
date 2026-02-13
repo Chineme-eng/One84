@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One84 | The Frontal Lobe Gap</title>
+    <title>One84 | Mind The Gap</title>
     <link rel="icon" href="One84 Logo.png" type="image/png">
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Bodoni+Moda:ital,opsz,wght@0,6-96,400;0,6-96,600;1,6-96,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Bodoni+Moda:ital,opsz,wght@0,6-96,400;0,6-96,600;1,6-96,500&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         :root {
-            --bg: #F8F8F8;
-            --text: #050505;
-            --accent: #7c3aed; /* Electric Violet */
-            --grid-color: rgba(0,0,0,0.06);
+            --bg: #FAFAFA;
+            --text: #1a1a1a;
+            --accent: #8A2BE2; /* Electric Violet */
+            --subtle: #a1a1aa;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,364 +23,299 @@
             background-color: var(--bg);
             color: var(--text);
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            min-height: 100vh;
+            overflow: hidden; /* No scroll, keeps it focused */
+            height: 100vh;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
-        /* --- DYNAMIC GRID BACKGROUND --- */
-        .grid-bg {
+        /* --- ATMOSPHERE --- */
+        .noise-overlay {
             position: fixed;
             inset: 0;
-            background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 60px 60px;
-            background-position: center top;
-            z-index: -1;
-            transform: perspective(500px) rotateX(20deg) scale(1.5);
-            transform-origin: top;
-            animation: gridMove 20s linear infinite;
-            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 2;
         }
 
-        @keyframes gridMove {
-            0% { background-position: center 0px; }
-            100% { background-position: center 60px; }
+        /* The Mouse "Torch" Glow */
+        .cursor-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(138, 43, 226, 0.08) 0%, rgba(255,255,255,0) 60%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            transition: opacity 0.5s ease;
         }
 
         /* --- HEADER --- */
         header {
-            padding: 24px 40px;
+            padding: 30px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: fixed;
-            top: 0;
             width: 100%;
-            z-index: 50;
-            backdrop-filter: blur(5px);
+            z-index: 10;
         }
 
-        .brand-pill {
+        .brand-text {
             font-family: 'Bodoni Moda', serif;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
             letter-spacing: -0.5px;
         }
 
-        .social-link {
+        .social-dock {
             display: flex;
+            gap: 20px;
             align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            color: var(--text);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            padding: 8px 16px;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 50px;
-            background: rgba(255,255,255,0.8);
-            transition: all 0.3s;
         }
-        .social-link:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
 
-        /* --- MAIN LAYOUT --- */
+        .icon-link {
+            color: var(--text);
+            opacity: 0.4;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .icon-link:hover {
+            opacity: 1;
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* --- MAIN CONTENT --- */
         main {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 120px 20px 60px;
-            max-width: 800px;
-            margin: 0 auto;
             text-align: center;
+            padding: 0 20px;
+            z-index: 10;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        /* --- GLITCH LOGO EFFECT --- */
-        .logo-wrapper {
-            position: relative;
-            width: 180px;
+        .logo-container {
+            width: 140px;
             margin-bottom: 40px;
-            cursor: pointer;
+            transition: transform 0.5s ease;
         }
-        
-        .logo-main {
-            width: 100%;
-            position: relative;
-            z-index: 2;
-            filter: drop-shadow(0 20px 30px rgba(124, 58, 237, 0.2));
-            transition: transform 0.3s;
-        }
+        .logo-container:hover { transform: scale(1.05); }
+        .logo-img { width: 100%; display: block; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.08)); }
 
-        .logo-wrapper:hover .logo-main { transform: scale(1.02); }
-        .logo-wrapper:hover::before, .logo-wrapper:hover::after { opacity: 0.6; }
-
-        /* RGB Split Glitch Layers */
-        .logo-wrapper::before, .logo-wrapper::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: url('One84 Logo.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            opacity: 0;
-            transition: opacity 0.3s;
-            mix-blend-mode: multiply;
-        }
-        .logo-wrapper::before { transform: translate(-3px, 0); filter: hue-rotate(90deg); }
-        .logo-wrapper::after { transform: translate(3px, 0); filter: hue-rotate(-90deg); }
-
-        /* --- TYPOGRAPHY & CONTEXT --- */
         h1 {
             font-family: 'Bodoni Moda', serif;
-            font-size: 48px;
+            font-size: 56px;
+            font-weight: 500;
+            letter-spacing: -0.04em;
             line-height: 1.1;
-            letter-spacing: -0.03em;
             margin-bottom: 24px;
-            color: var(--text);
+            color: #000;
         }
-        
-        .accent-text { color: var(--accent); font-style: italic; }
 
-        .context-block {
-            font-size: 14px;
+        .hero-copy {
+            font-size: 15px;
             line-height: 1.6;
             color: #555;
-            max-width: 500px;
-            margin-bottom: 50px;
-            border-left: 2px solid var(--accent);
-            padding-left: 20px;
-            text-align: left;
+            font-weight: 400;
+            margin-bottom: 40px;
+            max-width: 480px;
         }
 
-        .context-highlight {
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        /* --- THE SPRINT FORM --- */
-        .form-container {
+        /* --- THE INPUT FIELD --- */
+        .form-wrapper {
+            position: relative;
             width: 100%;
-            max-width: 400px;
-            position: relative;
-        }
-
-        .input-group {
-            position: relative;
-            display: flex;
-            align-items: center;
+            max-width: 380px;
         }
 
         input {
             width: 100%;
-            background: white;
-            border: 1px solid #e5e5e5;
-            padding: 20px;
-            padding-right: 50px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: var(--text);
+            padding: 18px 20px;
+            border: none;
+            border-bottom: 1px solid #e5e5e5;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            text-align: center;
             outline: none;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-            transition: all 0.3s;
-        }
-        
-        input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.15);
+            transition: all 0.4s ease;
+            color: var(--text);
         }
 
-        .submit-btn {
+        input::placeholder {
+            color: #ccc;
+            letter-spacing: 0.05em;
+            font-weight: 300;
+            transition: color 0.3s;
+        }
+
+        input:focus {
+            border-bottom-color: var(--accent);
+            padding-bottom: 22px; /* Subtle lift */
+        }
+        input:focus::placeholder { color: transparent; }
+
+        .submit-arrow {
             position: absolute;
             right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
             background: none;
             border: none;
             cursor: pointer;
-            color: var(--muted);
-            transition: color 0.3s;
-        }
-        .submit-btn:hover { color: var(--accent); }
-
-        .status-text {
-            margin-top: 15px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            color: var(--accent);
-            height: 20px;
             opacity: 0;
+            transition: all 0.3s ease;
+            color: var(--accent);
+        }
+        
+        input:not(:placeholder-shown) + .submit-arrow {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
         }
 
-        /* --- FOOTER TIMELINE --- */
-        .timeline-wrapper {
-            position: fixed;
-            bottom: 40px;
+        /* --- FOOTER / FOUNDER --- */
+        footer {
+            padding: 30px 40px;
             width: 100%;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            pointer-events: none; /* Let clicks pass through */
+            justify-content: space-between;
+            align-items: flex-end;
+            z-index: 10;
         }
 
-        .timeline-label {
-            font-size: 9px;
-            font-weight: 700;
-            letter-spacing: 0.2em;
-            color: var(--muted);
-            margin-bottom: 10px;
+        .founder-contact {
+            text-align: left;
+        }
+        
+        .founder-label {
+            font-size: 10px;
             text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--subtle);
+            margin-bottom: 5px;
+            display: block;
         }
 
-        .progress-bar {
-            width: 300px;
-            height: 4px;
-            background: rgba(0,0,0,0.05);
-            border-radius: 4px;
-            overflow: hidden;
+        .founder-link {
+            font-size: 13px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
             position: relative;
         }
-
-        .progress-fill {
+        
+        .founder-link::after {
+            content: '';
             position: absolute;
-            left: 0; top: 0; bottom: 0;
-            width: 25%; /* Starting point (18yo) */
-            background: var(--text);
-            transition: width 2s cubic-bezier(0.19, 1, 0.22, 1);
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
         }
+        .founder-link:hover::after { width: 100%; }
 
-        .timeline-nums {
-            width: 300px;
-            display: flex;
-            justify-content: space-between;
-            margin-top: 8px;
-            font-family: 'JetBrains Mono', monospace;
+        .copyright {
             font-size: 10px;
-            color: var(--muted);
+            color: var(--subtle);
         }
 
-        /* --- SUCCESS ANIMATION --- */
-        .success-overlay {
-            position: absolute;
-            inset: 0;
-            background: var(--bg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s;
-            z-index: 20;
-        }
-        .success-overlay.active { opacity: 1; pointer-events: auto; }
+        /* --- ANIMATIONS --- */
+        .fade-in { opacity: 0; animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
 
-        .big-84 {
-            font-family: 'Bodoni Moda', serif;
-            font-size: 120px;
-            color: var(--accent);
-            line-height: 1;
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
 
     </style>
 </head>
 <body>
 
-    <div class="grid-bg"></div>
+    <div class="noise-overlay"></div>
+    <div class="cursor-glow" id="glow"></div>
 
-    <header>
-        <div class="brand-pill">ONE84.</div>
-        <a href="https://www.linkedin.com/company/one84" target="_blank" class="social-link">
-            <i data-lucide="linkedin" width="14"></i>
-            Connect
-        </a>
+    <header class="fade-in">
+        <div class="brand-text">One84</div>
+        <div class="social-dock">
+            <a href="https://instagram.com" target="_blank" class="icon-link" aria-label="Instagram"><i data-lucide="instagram" width="18"></i></a>
+            <a href="https://linkedin.com/company/one84" target="_blank" class="icon-link" aria-label="LinkedIn"><i data-lucide="linkedin" width="18"></i></a>
+            <a href="mailto:founder@one84.com" class="icon-link" aria-label="Email Founder"><i data-lucide="mail" width="18"></i></a>
+        </div>
     </header>
 
     <main>
-        <div class="logo-wrapper">
-            <img src="One84 Logo.png" alt="One84" class="logo-main">
+        <div class="logo-container fade-in delay-1">
+            <img src="One84 Logo.png" alt="One84 Logo" class="logo-img">
         </div>
 
-        <h1>The <span class="accent-text">Frontal Lobe</span> Gap.</h1>
+        <h1 class="fade-in delay-2">Mind The Gap.</h1>
 
-        <div class="context-block">
-            <p>
-                At 18, society calls you an adult. <br>
-                But biologically, your brain is <strong>still loading</strong> until 25.
-            </p>
-            <br>
-            <p>
-                This gap—between legal adulthood and biological maturity—is where the chaos lives. 
-                <span class="context-highlight">One84</span> is the operating system for navigating the most competitive years of your life while your hardware is still upgrading.
-            </p>
+        <div class="hero-copy fade-in delay-3">
+            Society says you're an adult at 18. Biology says 25. 
+            <br><br>
+            <strong>One84</strong> is the axis for the chaos in between. A community for high-achievers navigating the years they didn't prepare you for.
         </div>
 
-        <div class="form-container">
-            <form id="sprint-form">
-                <div class="input-group">
-                    <input type="email" id="email" placeholder="ENTER EMAIL TO INITIALIZE PROTOCOL..." required autocomplete="off">
-                    <button type="submit" class="submit-btn"><i data-lucide="arrow-right" width="20"></i></button>
-                </div>
+        <div class="form-wrapper fade-in delay-3">
+            <form id="join-form">
+                <input type="email" id="email" placeholder="JOIN THE AXIS" required autocomplete="off">
+                <button type="submit" class="submit-arrow"><i data-lucide="arrow-right" width="20"></i></button>
             </form>
-            <div class="status-text" id="status">_awaiting_input</div>
-        </div>
-
-        <div class="success-overlay" id="success-screen">
-            <div class="big-84">84</div>
-            <p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em;">ACCESS GRANTED. CHECK INBOX.</p>
         </div>
     </main>
 
-    <div class="timeline-wrapper">
-        <div class="timeline-label">Biological Loading Status</div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="brain-load"></div>
+    <footer class="fade-in delay-3">
+        <div class="founder-contact">
+            <span class="founder-label">Founder's Line</span>
+            <a href="mailto:chineme@one84.com" class="founder-link">Contact Direct</a>
         </div>
-        <div class="timeline-nums">
-            <span>18</span>
-            <span>25</span>
+        <div class="copyright">
+            © 2026 One84. The 18—24 Axis.
         </div>
-    </div>
+    </footer>
 
     <script>
         lucide.createIcons();
 
-        const form = document.getElementById('sprint-form');
-        const input = document.getElementById('email');
-        const status = document.getElementById('status');
-        const successScreen = document.getElementById('success-screen');
-        const brainLoad = document.getElementById('brain-load');
-
-        // Input Interaction
-        input.addEventListener('input', () => {
-            status.style.opacity = '1';
-            status.innerText = "_detecting_user_pattern...";
+        // MOUSE GLOW EFFECT
+        const glow = document.getElementById('glow');
+        document.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
         });
 
-        // Form Submit
+        // FORM HANDLING
+        const form = document.getElementById('join-form');
+        const input = document.getElementById('email');
+        const btn = document.querySelector('.submit-arrow');
+
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            input.blur(); // Close keyboard
             
-            // 1. Simulation Phase
-            status.style.opacity = '1';
-            status.style.color = '#7c3aed';
-            status.innerText = "_initializing_frontal_lobe...";
-            
-            // 2. Timeline Animation
-            brainLoad.style.width = "100%";
-            brainLoad.style.backgroundColor = "#7c3aed";
+            // Visual Feedback State
+            input.style.transition = "all 0.3s ease";
+            input.style.opacity = "0";
+            btn.style.opacity = "0";
 
-            // 3. Success Reveal
             setTimeout(() => {
-                successScreen.classList.add('active');
-            }, 1800);
+                input.value = "";
+                input.placeholder = "YOU ARE ON THE LIST.";
+                input.style.opacity = "1";
+                input.style.borderBottomColor = "#8A2BE2";
+                input.style.color = "#8A2BE2";
+                input.disabled = true;
+            }, 400);
         });
     </script>
 </body>
