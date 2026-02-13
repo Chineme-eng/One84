@@ -3,94 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One84 | Mind the Gap</title>
+    <title>One84 | Initialize</title>
     
     <link rel="icon" href="One84 Logo.png" type="image/png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Bodoni+Moda:opsz,wght@6-96,400;6-96,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Bodoni+Moda:opsz,wght@6-96,400;6-96,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     
     <style>
         * { box-sizing: border-box; }
         
         :root {
-            --color-bg: #FFFFFF;
-            --color-text: #050505;
-            --color-accent: #8A2BE2; /* Electric Violet */
-            --color-muted: #94a3b8;
-            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --bg: #FFFFFF;
+            --text: #050505;
+            --accent: #8A2BE2; /* Electric Violet */
+            --muted: #94a3b8;
+            --ease: cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         body {
-            background-color: var(--color-bg);
+            background-color: var(--bg);
             margin: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             font-family: 'Inter', sans-serif;
             overflow: hidden;
-            color: var(--color-text);
-            /* Custom Selection Color */
-            ::selection { background: var(--color-accent); color: white; }
+            color: var(--text);
         }
 
-        /* Focus Mode Wrapper */
+        ::selection { background: var(--accent); color: white; }
+
+        /* Focus Mode */
         body.is-focused .container > *:not(form),
-        body.is-focused footer,
-        body.is-focused .status-dot {
-            opacity: 0.3;
-            filter: blur(1px);
+        body.is-focused .frontal-lobe-bar {
+            opacity: 0.2;
+            filter: blur(2px);
+            transition: all 0.5s var(--ease);
         }
 
         .container {
             text-align: center;
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
             padding: 0 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: all 0.5s var(--ease-out-expo);
+            position: relative;
+            z-index: 10;
         }
 
-        /* Staggered Animation Setup */
-        .reveal {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideUpFade 1.2s var(--ease-out-expo) forwards;
-        }
-
+        /* Elements */
         .logo {
-            width: 180px; 
-            margin-bottom: 50px;
-            animation-delay: 0.1s;
+            width: 160px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: slideUp 1s var(--ease) forwards 0.2s;
         }
 
         h1 {
-            font-family: 'Bodoni Moda', serif; /* Changed to match brand identity */
-            font-size: 28px;
+            font-family: 'Bodoni Moda', serif;
+            font-size: 32px;
             font-weight: 400;
-            letter-spacing: -0.03em;
-            margin: 0 0 8px 0;
-            color: var(--color-text);
-            animation-delay: 0.2s;
+            letter-spacing: -0.04em;
+            margin: 0 0 12px 0;
+            color: var(--text);
+            opacity: 0;
+            animation: slideUp 1s var(--ease) forwards 0.4s;
         }
 
         .subhead {
             font-size: 11px;
             font-weight: 500;
-            color: var(--color-muted);
+            color: var(--muted);
             text-transform: uppercase;
-            letter-spacing: 0.2em;
-            margin-bottom: 60px;
-            animation-delay: 0.3s;
+            letter-spacing: 0.15em;
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: slideUp 1s var(--ease) forwards 0.5s;
+            line-height: 1.6;
         }
 
-        /* Form Styling */
+        /* Form */
         form {
             width: 100%;
-            animation-delay: 0.4s;
+            opacity: 0;
+            animation: slideUp 1s var(--ease) forwards 0.6s;
+        }
+
+        .input-wrapper {
             position: relative;
+            width: 100%;
         }
 
         input[type="email"] {
@@ -100,145 +105,194 @@
             padding: 15px 0;
             width: 100%;
             text-align: center;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
+            font-family: 'JetBrains Mono', monospace; /* Tech-native font for input */
+            font-size: 12px;
             font-weight: 400;
             outline: none;
-            transition: all 0.4s var(--ease-out-expo);
-            color: var(--color-text);
-            border-radius: 0; /* Remove iOS rounded corners */
+            transition: all 0.3s var(--ease);
+            color: var(--text);
+            border-radius: 0;
+            text-transform: uppercase;
         }
 
         input[type="email"]::placeholder {
-            color: rgba(0,0,0,0.2);
-            letter-spacing: 0.05em;
-            font-size: 12px;
-            transition: color 0.3s ease;
+            color: rgba(0,0,0,0.3);
+            letter-spacing: 0.1em;
         }
 
         input[type="email"]:focus {
-            border-bottom: 1px solid var(--color-accent);
-            transform: scale(1.05);
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 18px; /* Slight lift */
         }
         
-        input[type="email"]:focus::placeholder {
-            color: transparent; /* Hide placeholder on focus for cleaner look */
-        }
-
-        /* Footer */
-        footer {
-            position: absolute;
-            bottom: 40px;
+        /* Status Text (Loading...) */
+        .status-msg {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
-            color: rgba(0,0,0,0.3);
-            font-weight: 400;
-            letter-spacing: 0.02em;
-            animation: fadeIn 2s ease-out forwards;
-            width: 100%;
-            text-align: center;
-            transition: opacity 0.3s ease;
-        }
-
-        .status-dot {
-            position: absolute;
-            top: 40px;
-            right: 40px;
-            width: 8px;
-            height: 8px;
-            background-color: var(--color-accent);
-            border-radius: 50%;
-            box-shadow: 0 0 15px var(--color-accent);
-            animation: pulse 3s infinite;
+            color: var(--accent);
+            margin-top: 15px;
+            height: 15px;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
         /* Success State */
-        .success-text {
+        .success-view {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .big-number {
             font-family: 'Bodoni Moda', serif;
-            color: var(--color-accent);
-            font-size: 84px; /* The number represents the brand */
+            font-size: 84px;
             letter-spacing: -4px;
             line-height: 1;
+            color: var(--accent);
+            animation: popIn 0.6s var(--ease);
+        }
+        
+        .welcome-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-top: 10px;
+            color: var(--text);
+        }
+
+        /* Frontal Lobe Bar (Footer) */
+        .frontal-lobe-container {
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
             opacity: 0;
-            transform: scale(0.9);
-            animation: popIn 0.8s var(--ease-out-expo) forwards;
+            animation: fadeIn 1.5s var(--ease) forwards 1s;
         }
 
-        /* Keyframes */
-        @keyframes slideUpFade {
-            to { opacity: 1; transform: translateY(0); }
+        .bar-label {
+            font-size: 9px;
+            color: var(--muted);
+            margin-bottom: 8px;
+            font-weight: 500;
+            letter-spacing: 0.05em;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .progress-track {
+            width: 100%;
+            height: 2px;
+            background: #f0f0f0;
+            position: relative;
+            border-radius: 2px;
+            overflow: hidden;
         }
 
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
+        .progress-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 25%; /* Represents age 18 start point */
+            background: var(--text);
+            animation: loadBrain 2s var(--ease) forwards;
+        }
+        
+        .axis-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8px;
+            color: #d4d4d4;
         }
 
-        @keyframes popIn {
-            to { opacity: 1; transform: scale(1); }
-        }
+        /* Animations */
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes loadBrain { from { width: 0%; } to { width: 28%; } /* Slight movement to show life */ }
+        @keyframes blink { 50% { opacity: 0; } }
+
     </style>
 </head>
 <body>
 
-    <div class="status-dot" title="Network Active"></div>
-
     <div class="container" id="main-content">
-        <img src="One84 Logo.png" alt="One84" class="logo reveal">
+        <img src="One84 Logo.png" alt="One84" class="logo">
         
-        <h1 class="reveal">Mind the Gap.</h1>
-        <div class="subhead reveal">The 18—24 Axis</div>
+        <h1>Mind the Gap.</h1>
+        <div class="subhead">The years they didn't prepare you for.</div>
 
-        <form id="sprint-form" class="reveal">
-            <input type="email" id="email-input" placeholder="[ JOIN THE SPRINT ]" autocomplete="off" required>
+        <form id="sprint-form">
+            <div class="input-wrapper">
+                <input type="email" id="email-input" placeholder="[ INITIALIZE_184 ]" autocomplete="off" required>
+            </div>
+            <div class="status-msg" id="status-msg">_establishing_connection</div>
         </form>
     </div>
 
-    <footer>
-        *18–24: Legally an adult. Biologically loading.
-    </footer>
+    <div class="frontal-lobe-container">
+        <div class="bar-label">BIOLOGICALLY LOADING</div>
+        <div class="progress-track">
+            <div class="progress-fill"></div>
+        </div>
+        <div class="axis-labels">
+            <span>18</span>
+            <span>25</span>
+        </div>
+    </div>
 
     <script>
         const input = document.getElementById('email-input');
         const body = document.body;
         const form = document.getElementById('sprint-form');
         const container = document.getElementById('main-content');
+        const statusMsg = document.getElementById('status-msg');
 
-        // Focus Mode Logic
-        input.addEventListener('focus', () => {
-            body.classList.add('is-focused');
+        // Focus Mode
+        input.addEventListener('focus', () => body.classList.add('is-focused'));
+        input.addEventListener('blur', () => body.classList.remove('is-focused'));
+
+        // Typing Effect for Input
+        input.addEventListener('input', (e) => {
+            if(e.target.value.length > 0) {
+                statusMsg.style.opacity = '1';
+                statusMsg.innerText = "_identifying_user";
+            } else {
+                statusMsg.style.opacity = '0';
+            }
         });
 
-        input.addEventListener('blur', () => {
-            body.classList.remove('is-focused');
-        });
-
-        // Submission Logic
+        // Submit Logic
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            // 1. Unfocus visual state
             body.classList.remove('is-focused');
-            input.blur();
-
-            // 2. Fade out container elements
-            container.style.transform = 'translateY(-10px)';
-            container.style.opacity = '0';
+            input.blur(); // Remove keyboard
             
+            // 1. Change Status
+            statusMsg.style.opacity = '1';
+            statusMsg.innerText = "_initializing_frontal_lobe...";
+            statusMsg.style.animation = "blink 0.5s infinite";
+            
+            // 2. Delay for effect
             setTimeout(() => {
-                // 3. Inject Success State
-                container.innerHTML = '<div class="success-text">84</div>';
-                container.style.transform = 'translateY(0)';
-                container.style.opacity = '1';
+                // Clear content
+                container.innerHTML = `
+                    <div class="success-view">
+                        <div class="big-number">84</div>
+                        <div class="welcome-text">Gap Bridged. Welcome to the Axis.</div>
+                    </div>
+                `;
                 
-                // Optional: Change background slightly to indicate success? 
-                // Kept white for purity, but could fade to #fafafa.
-            }, 600);
+                // Animate Progress Bar to Full
+                document.querySelector('.progress-fill').style.transition = "width 1s cubic-bezier(0.19, 1, 0.22, 1)";
+                document.querySelector('.progress-fill').style.width = "100%";
+                document.querySelector('.progress-fill').style.backgroundColor = "#8A2BE2"; // Turn purple
+                
+            }, 1500);
         });
     </script>
 </body>
