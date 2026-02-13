@@ -14,11 +14,11 @@
         * { box-sizing: border-box; }
         
         :root {
-            --bg: #FAFAFA; /* Slightly warmer white for depth */
-            --text: #050505;
+            --bg: #FDFDFD;
+            --text: #0a0a0a;
             --accent: #8A2BE2; /* Electric Violet */
             --muted: #94a3b8;
-            --ease: cubic-bezier(0.19, 1, 0.22, 1);
+            --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         body {
@@ -33,11 +33,12 @@
             overflow: hidden;
             color: var(--text);
             position: relative;
+            perspective: 1000px; /* For 3D Tilt */
         }
 
         ::selection { background: var(--accent); color: white; }
 
-        /* --- BACKGROUND EFFECTS --- */
+        /* --- BACKGROUND ALCHEMY --- */
         .bg-layer {
             position: absolute;
             inset: 0;
@@ -50,18 +51,35 @@
         .grain {
             position: absolute;
             inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-            opacity: 0.4;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            opacity: 0.6;
+            z-index: 2;
         }
 
-        /* 2. The Axis Grid */
-        .grid-lines {
+        /* 2. Ambient Orbs (New!) */
+        .orb {
             position: absolute;
-            inset: 0;
-            background-image: linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
-            background-size: 80px 80px;
-            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+            z-index: 1;
+            animation: drift 20s infinite alternate;
+        }
+        .orb-1 {
+            width: 600px; height: 600px;
+            background: var(--accent);
+            top: -20%; left: -10%;
+        }
+        .orb-2 {
+            width: 500px; height: 500px;
+            background: #4B0082; /* Indigo depth */
+            bottom: -20%; right: -10%;
+            animation-delay: -5s;
+        }
+
+        @keyframes drift {
+            from { transform: translate(0, 0); }
+            to { transform: translate(50px, 50px); }
         }
 
         /* 3. The "Ghost" Logo */
@@ -69,27 +87,31 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 800px;
+            width: 120vh; /* Massive */
             transform: translate(-50%, -50%) rotate(0deg);
-            opacity: 0.03;
-            filter: blur(2px);
-            animation: slowSpin 120s linear infinite;
+            opacity: 0.02;
+            filter: grayscale(100%);
+            z-index: 0;
+            animation: slowSpin 240s linear infinite;
         }
 
         @keyframes slowSpin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
 
-        /* --- UI LAYOUT --- */
+
+        /* --- UI ELEMENTS --- */
         
-        /* Top Navigation */
+        /* Nav */
         nav {
             position: absolute;
-            top: 40px;
-            right: 40px;
+            top: 30px;
+            right: 30px;
             z-index: 50;
-            animation: fadeIn 2s var(--ease);
+            display: flex;
+            gap: 15px;
+            animation: fadeIn 2s var(--ease-out);
         }
 
-        .linkedin-btn {
+        .glass-btn {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -98,75 +120,79 @@
             font-size: 11px;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            padding: 10px 16px;
-            border: 1px solid rgba(0,0,0,0.08);
+            letter-spacing: 0.05em;
+            padding: 10px 18px;
+            border: 1px solid rgba(0,0,0,0.05);
             border-radius: 99px;
-            background: rgba(255,255,255,0.5);
-            backdrop-filter: blur(5px);
-            transition: all 0.3s var(--ease);
+            background: rgba(255,255,255,0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.3s var(--ease-out);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
         }
 
-        .linkedin-btn:hover {
+        .glass-btn:hover {
             border-color: var(--accent);
             color: var(--accent);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.1);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
+            background: rgba(255,255,255,0.8);
         }
 
-        /* Main Container */
+        /* Main Container with 3D Tilt */
         .container {
             text-align: center;
-            max-width: 420px;
+            max-width: 450px;
             width: 100%;
-            padding: 0 20px;
+            padding: 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
             z-index: 10;
-            transition: opacity 0.5s var(--ease), filter 0.5s var(--ease);
+            transform-style: preserve-3d;
+            /* Glass Card Background (Subtle) */
+            background: rgba(255,255,255,0.01); 
+            border-radius: 30px;
         }
 
-        /* Elements */
         .logo {
-            width: 160px;
-            margin-bottom: 40px;
+            width: 180px;
+            margin-bottom: 45px;
             opacity: 0;
-            animation: slideUp 1s var(--ease) forwards 0.2s;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.05));
+            animation: slideUp 1s var(--ease-out) forwards 0.2s;
+            filter: drop-shadow(0 20px 40px rgba(138, 43, 226, 0.15)); /* Glow effect */
+            transform: translateZ(20px); /* 3D pop */
         }
 
         h1 {
             font-family: 'Bodoni Moda', serif;
-            font-size: 32px;
-            font-weight: 400;
+            font-size: 36px;
+            font-weight: 500;
             letter-spacing: -0.04em;
             margin: 0 0 12px 0;
             color: var(--text);
             opacity: 0;
-            animation: slideUp 1s var(--ease) forwards 0.4s;
+            animation: slideUp 1s var(--ease-out) forwards 0.4s;
+            transform: translateZ(10px);
         }
 
         .subhead {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 500;
             color: var(--muted);
             text-transform: uppercase;
             letter-spacing: 0.15em;
             margin-bottom: 50px;
             opacity: 0;
-            animation: slideUp 1s var(--ease) forwards 0.5s;
+            animation: slideUp 1s var(--ease-out) forwards 0.5s;
             line-height: 1.6;
+            transform: translateZ(5px);
         }
 
-        /* Form */
-        form {
-            width: 100%;
-            opacity: 0;
-            animation: slideUp 1s var(--ease) forwards 0.6s;
-        }
-
+        /* Input */
+        form { width: 100%; opacity: 0; animation: slideUp 1s var(--ease-out) forwards 0.6s; }
+        
         .input-wrapper { position: relative; width: 100%; }
 
         input[type="email"] {
@@ -177,139 +203,147 @@
             width: 100%;
             text-align: center;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 400;
             outline: none;
-            transition: all 0.3s var(--ease);
+            transition: all 0.3s var(--ease-out);
             color: var(--text);
             border-radius: 0;
             text-transform: uppercase;
         }
 
-        input[type="email"]::placeholder { color: rgba(0,0,0,0.3); letter-spacing: 0.1em; }
-        input[type="email"]:focus { border-bottom: 1px solid var(--accent); padding-bottom: 18px; }
+        input[type="email"]::placeholder { color: rgba(0,0,0,0.25); letter-spacing: 0.05em; }
+        
+        input[type="email"]:focus {
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 18px;
+            letter-spacing: 0.05em;
+        }
         
         .status-msg {
             font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
             color: var(--accent);
-            margin-top: 15px;
+            margin-top: 20px;
             height: 15px;
             opacity: 0;
             transition: opacity 0.3s;
+            font-weight: 600;
         }
 
-        /* Founder's Note Trigger */
+        /* Founder's Trigger */
         .mission-trigger {
-            margin-top: 40px;
+            margin-top: 50px;
             background: none;
             border: none;
             font-size: 10px;
             font-family: 'Inter', sans-serif;
             color: var(--muted);
             cursor: pointer;
-            text-decoration: underline;
-            text-underline-offset: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             opacity: 0;
-            animation: fadeIn 1.5s var(--ease) forwards 1.2s;
-            transition: color 0.3s;
+            animation: fadeIn 1.5s var(--ease-out) forwards 1.2s;
+            transition: all 0.3s;
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            border-radius: 50px;
         }
-        .mission-trigger:hover { color: var(--accent); }
+        .mission-trigger:hover {
+            color: var(--accent);
+            background: rgba(138, 43, 226, 0.05);
+            border-color: rgba(138, 43, 226, 0.1);
+        }
 
-        /* --- MODAL (Founder's Note) --- */
+        /* --- MODAL --- */
         .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(10px);
+            position: fixed; inset: 0;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             z-index: 100;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s var(--ease);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.5s var(--ease-out);
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .modal-content {
-            background: white;
+            background: #fff;
             border: 1px solid rgba(0,0,0,0.05);
-            padding: 60px 40px;
-            max-width: 500px;
+            padding: 60px 50px;
+            max-width: 550px;
             width: 90%;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.05);
-            transform: translateY(20px);
-            transition: transform 0.5s var(--ease);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.08);
+            transform: translateY(30px) scale(0.95);
+            transition: transform 0.5s var(--ease-out);
             position: relative;
+            border-radius: 20px;
         }
-        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
 
         .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--muted);
-            transition: color 0.2s;
+            position: absolute; top: 25px; right: 25px;
+            background: none; border: none; cursor: pointer;
+            color: var(--muted); transition: all 0.2s;
+            padding: 5px; border-radius: 50%;
         }
-        .modal-close:hover { color: var(--text); }
+        .modal-close:hover { color: var(--text); background: rgba(0,0,0,0.05); }
 
         .founder-title {
             font-family: 'Bodoni Moda', serif;
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 28px;
+            margin-bottom: 30px;
             color: var(--text);
         }
         
         .founder-text {
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.8;
             color: #444;
             font-weight: 300;
-            margin-bottom: 30px;
-            text-align: justify; /* Newspaper feel */
+            margin-bottom: 40px;
+            text-align: justify;
+            text-align-last: center;
         }
 
         .founder-sign {
             font-family: 'Bodoni Moda', serif;
             font-style: italic;
             color: var(--accent);
-            font-size: 16px;
+            font-size: 18px;
         }
 
         /* Success State */
         .success-view { display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .big-number { font-family: 'Bodoni Moda', serif; font-size: 84px; letter-spacing: -4px; line-height: 1; color: var(--accent); animation: popIn 0.6s var(--ease); }
-        .welcome-text { font-family: 'Inter', sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; margin-top: 10px; color: var(--text); }
+        .big-number { font-family: 'Bodoni Moda', serif; font-size: 96px; letter-spacing: -6px; line-height: 1; color: var(--accent); animation: popIn 0.6s var(--ease-out); }
+        .welcome-text { font-family: 'Inter', sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; margin-top: 15px; color: var(--text); font-weight: 600; }
 
         /* Footer Timeline */
         .frontal-lobe-container {
             position: absolute;
             bottom: 40px;
             width: 100%;
-            max-width: 300px;
+            max-width: 320px;
             text-align: center;
             opacity: 0;
-            animation: fadeIn 1.5s var(--ease) forwards 1s;
+            animation: fadeIn 1.5s var(--ease-out) forwards 1s;
         }
-        .bar-label { font-size: 9px; color: var(--muted); margin-bottom: 8px; font-weight: 500; letter-spacing: 0.05em; }
-        .progress-track { width: 100%; height: 2px; background: #f0f0f0; position: relative; border-radius: 2px; overflow: hidden; }
-        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 25%; background: var(--text); animation: loadBrain 2s var(--ease) forwards; }
-        .axis-labels { display: flex; justify-content: space-between; margin-top: 6px; font-family: 'JetBrains Mono', monospace; font-size: 8px; color: #d4d4d4; }
+        .bar-label { font-size: 9px; color: var(--muted); margin-bottom: 10px; font-weight: 600; letter-spacing: 0.1em; }
+        .progress-track { width: 100%; height: 3px; background: rgba(0,0,0,0.05); position: relative; border-radius: 3px; overflow: hidden; }
+        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 25%; background: var(--text); animation: loadBrain 2s var(--ease-out) forwards; border-radius: 3px; }
+        .axis-labels { display: flex; justify-content: space-between; margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #ccc; }
 
         /* Animations */
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(30px) translateZ(0); opacity: 0; } to { transform: translateY(0) translateZ(0); opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes loadBrain { from { width: 0%; } to { width: 28%; } }
         @keyframes blink { 50% { opacity: 0; } }
 
         /* Focus Mode */
-        body.is-focused .container > *:not(form), body.is-focused .frontal-lobe-container, body.is-focused nav, body.is-focused .mission-trigger { opacity: 0.1; filter: blur(3px); transition: all 0.5s var(--ease); }
+        body.is-focused .container > *:not(form), body.is-focused .frontal-lobe-container, body.is-focused nav, body.is-focused .mission-trigger { opacity: 0.1; filter: blur(4px); transition: all 0.6s var(--ease-out); }
 
     </style>
 </head>
@@ -317,18 +351,19 @@
 
     <div class="bg-layer">
         <div class="grain"></div>
-        <div class="grid-lines"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
         <img src="One84 Logo.png" alt="" class="bg-logo">
     </div>
 
     <nav>
-        <a href="https://www.linkedin.com/company/one84" target="_blank" class="linkedin-btn">
+        <a href="https://www.linkedin.com/company/one84" target="_blank" class="glass-btn">
             <i data-lucide="linkedin" width="14" height="14"></i>
             Connect
         </a>
     </nav>
 
-    <div class="container" id="main-content">
+    <div class="container" id="main-card">
         <img src="One84 Logo.png" alt="One84" class="logo">
         
         <h1>Mind the Gap.</h1>
@@ -341,7 +376,7 @@
             <div class="status-msg" id="status-msg">_establishing_connection</div>
         </form>
 
-        <button class="mission-trigger" onclick="openModal()">[ Read Mission Protocol ]</button>
+        <button class="mission-trigger" onclick="openModal()">[ Mission Protocol ]</button>
     </div>
 
     <div class="frontal-lobe-container">
@@ -357,9 +392,9 @@
 
     <div class="modal-overlay" id="mission-modal">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()"><i data-lucide="x" width="20"></i></button>
+            <button class="modal-close" onclick="closeModal()"><i data-lucide="x" width="24"></i></button>
             
-            <h2 class="founder-title">The Founder's Note</h2>
+            <h2 class="founder-title">Founder's Note</h2>
             <div class="founder-text">
                 <p><strong>18 to 24.</strong> They call you an adult, but the science says you're still loading. This is the <em>Frontal Lobe Gap</em>—the chaos between legal adulthood and biological maturity.</p>
                 <br>
@@ -377,15 +412,23 @@
         const input = document.getElementById('email-input');
         const body = document.body;
         const form = document.getElementById('sprint-form');
-        const container = document.getElementById('main-content');
+        const container = document.getElementById('main-card');
         const statusMsg = document.getElementById('status-msg');
         const modal = document.getElementById('mission-modal');
+
+        // 3D Parallax Effect
+        document.addEventListener('mousemove', (e) => {
+            if (window.innerWidth > 768) { // Only on desktop
+                const x = (window.innerWidth / 2 - e.pageX) / 50;
+                const y = (window.innerHeight / 2 - e.pageY) / 50;
+                container.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+            }
+        });
 
         // Modal Logic
         function openModal() { modal.classList.add('active'); }
         function closeModal() { modal.classList.remove('active'); }
         
-        // Close modal on outside click
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
@@ -424,6 +467,9 @@
                 document.querySelector('.progress-fill').style.transition = "width 1s cubic-bezier(0.19, 1, 0.22, 1)";
                 document.querySelector('.progress-fill').style.width = "100%";
                 document.querySelector('.progress-fill').style.backgroundColor = "#8A2BE2";
+                
+                // Keep the tilt effect but reset slightly
+                container.style.transform = "rotateY(0) rotateX(0)";
             }, 1500);
         });
     </script>
