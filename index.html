@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One84 | Initialize</title>
+    <title>One84 | Mind the Gap</title>
     
     <link rel="icon" href="One84 Logo.png" type="image/png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Bodoni+Moda:opsz,wght@6-96,400;6-96,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Bodoni+Moda:opsz,wght@6-96,400;6-96,500;6-96,700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
         * { box-sizing: border-box; }
         
         :root {
-            --bg: #FFFFFF;
+            --bg: #FAFAFA; /* Slightly warmer white for depth */
             --text: #050505;
             --accent: #8A2BE2; /* Electric Violet */
             --muted: #94a3b8;
@@ -31,18 +32,89 @@
             font-family: 'Inter', sans-serif;
             overflow: hidden;
             color: var(--text);
+            position: relative;
         }
 
         ::selection { background: var(--accent); color: white; }
 
-        /* Focus Mode */
-        body.is-focused .container > *:not(form),
-        body.is-focused .frontal-lobe-bar {
-            opacity: 0.2;
-            filter: blur(2px);
-            transition: all 0.5s var(--ease);
+        /* --- BACKGROUND EFFECTS --- */
+        .bg-layer {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
         }
 
+        /* 1. Grain Texture */
+        .grain {
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            opacity: 0.4;
+        }
+
+        /* 2. The Axis Grid */
+        .grid-lines {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
+            background-size: 80px 80px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+
+        /* 3. The "Ghost" Logo */
+        .bg-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            transform: translate(-50%, -50%) rotate(0deg);
+            opacity: 0.03;
+            filter: blur(2px);
+            animation: slowSpin 120s linear infinite;
+        }
+
+        @keyframes slowSpin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* --- UI LAYOUT --- */
+        
+        /* Top Navigation */
+        nav {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 50;
+            animation: fadeIn 2s var(--ease);
+        }
+
+        .linkedin-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 10px 16px;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 99px;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s var(--ease);
+        }
+
+        .linkedin-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.1);
+        }
+
+        /* Main Container */
         .container {
             text-align: center;
             max-width: 420px;
@@ -53,6 +125,7 @@
             align-items: center;
             position: relative;
             z-index: 10;
+            transition: opacity 0.5s var(--ease), filter 0.5s var(--ease);
         }
 
         /* Elements */
@@ -61,6 +134,7 @@
             margin-bottom: 40px;
             opacity: 0;
             animation: slideUp 1s var(--ease) forwards 0.2s;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.05));
         }
 
         h1 {
@@ -93,10 +167,7 @@
             animation: slideUp 1s var(--ease) forwards 0.6s;
         }
 
-        .input-wrapper {
-            position: relative;
-            width: 100%;
-        }
+        .input-wrapper { position: relative; width: 100%; }
 
         input[type="email"] {
             border: none;
@@ -105,7 +176,7 @@
             padding: 15px 0;
             width: 100%;
             text-align: center;
-            font-family: 'JetBrains Mono', monospace; /* Tech-native font for input */
+            font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
             font-weight: 400;
             outline: none;
@@ -115,17 +186,9 @@
             text-transform: uppercase;
         }
 
-        input[type="email"]::placeholder {
-            color: rgba(0,0,0,0.3);
-            letter-spacing: 0.1em;
-        }
-
-        input[type="email"]:focus {
-            border-bottom: 1px solid var(--accent);
-            padding-bottom: 18px; /* Slight lift */
-        }
+        input[type="email"]::placeholder { color: rgba(0,0,0,0.3); letter-spacing: 0.1em; }
+        input[type="email"]:focus { border-bottom: 1px solid var(--accent); padding-bottom: 18px; }
         
-        /* Status Text (Loading...) */
         .status-msg {
             font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
@@ -136,33 +199,94 @@
             transition: opacity 0.3s;
         }
 
-        /* Success State */
-        .success-view {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .big-number {
-            font-family: 'Bodoni Moda', serif;
-            font-size: 84px;
-            letter-spacing: -4px;
-            line-height: 1;
-            color: var(--accent);
-            animation: popIn 0.6s var(--ease);
-        }
-        
-        .welcome-text {
-            font-family: 'Inter', sans-serif;
+        /* Founder's Note Trigger */
+        .mission-trigger {
+            margin-top: 40px;
+            background: none;
+            border: none;
             font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            margin-top: 10px;
+            font-family: 'Inter', sans-serif;
+            color: var(--muted);
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            opacity: 0;
+            animation: fadeIn 1.5s var(--ease) forwards 1.2s;
+            transition: color 0.3s;
+        }
+        .mission-trigger:hover { color: var(--accent); }
+
+        /* --- MODAL (Founder's Note) --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s var(--ease);
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-content {
+            background: white;
+            border: 1px solid rgba(0,0,0,0.05);
+            padding: 60px 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+            transform: translateY(20px);
+            transition: transform 0.5s var(--ease);
+            position: relative;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--muted);
+            transition: color 0.2s;
+        }
+        .modal-close:hover { color: var(--text); }
+
+        .founder-title {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 24px;
+            margin-bottom: 20px;
             color: var(--text);
         }
+        
+        .founder-text {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #444;
+            font-weight: 300;
+            margin-bottom: 30px;
+            text-align: justify; /* Newspaper feel */
+        }
 
-        /* Frontal Lobe Bar (Footer) */
+        .founder-sign {
+            font-family: 'Bodoni Moda', serif;
+            font-style: italic;
+            color: var(--accent);
+            font-size: 16px;
+        }
+
+        /* Success State */
+        .success-view { display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .big-number { font-family: 'Bodoni Moda', serif; font-size: 84px; letter-spacing: -4px; line-height: 1; color: var(--accent); animation: popIn 0.6s var(--ease); }
+        .welcome-text { font-family: 'Inter', sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; margin-top: 10px; color: var(--text); }
+
+        /* Footer Timeline */
         .frontal-lobe-container {
             position: absolute;
             bottom: 40px;
@@ -172,53 +296,37 @@
             opacity: 0;
             animation: fadeIn 1.5s var(--ease) forwards 1s;
         }
-
-        .bar-label {
-            font-size: 9px;
-            color: var(--muted);
-            margin-bottom: 8px;
-            font-weight: 500;
-            letter-spacing: 0.05em;
-        }
-
-        .progress-track {
-            width: 100%;
-            height: 2px;
-            background: #f0f0f0;
-            position: relative;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 25%; /* Represents age 18 start point */
-            background: var(--text);
-            animation: loadBrain 2s var(--ease) forwards;
-        }
-        
-        .axis-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 8px;
-            color: #d4d4d4;
-        }
+        .bar-label { font-size: 9px; color: var(--muted); margin-bottom: 8px; font-weight: 500; letter-spacing: 0.05em; }
+        .progress-track { width: 100%; height: 2px; background: #f0f0f0; position: relative; border-radius: 2px; overflow: hidden; }
+        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 25%; background: var(--text); animation: loadBrain 2s var(--ease) forwards; }
+        .axis-labels { display: flex; justify-content: space-between; margin-top: 6px; font-family: 'JetBrains Mono', monospace; font-size: 8px; color: #d4d4d4; }
 
         /* Animations */
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes loadBrain { from { width: 0%; } to { width: 28%; } /* Slight movement to show life */ }
+        @keyframes loadBrain { from { width: 0%; } to { width: 28%; } }
         @keyframes blink { 50% { opacity: 0; } }
+
+        /* Focus Mode */
+        body.is-focused .container > *:not(form), body.is-focused .frontal-lobe-container, body.is-focused nav, body.is-focused .mission-trigger { opacity: 0.1; filter: blur(3px); transition: all 0.5s var(--ease); }
 
     </style>
 </head>
 <body>
+
+    <div class="bg-layer">
+        <div class="grain"></div>
+        <div class="grid-lines"></div>
+        <img src="One84 Logo.png" alt="" class="bg-logo">
+    </div>
+
+    <nav>
+        <a href="https://www.linkedin.com/company/one84" target="_blank" class="linkedin-btn">
+            <i data-lucide="linkedin" width="14" height="14"></i>
+            Connect
+        </a>
+    </nav>
 
     <div class="container" id="main-content">
         <img src="One84 Logo.png" alt="One84" class="logo">
@@ -232,6 +340,8 @@
             </div>
             <div class="status-msg" id="status-msg">_establishing_connection</div>
         </form>
+
+        <button class="mission-trigger" onclick="openModal()">[ Read Mission Protocol ]</button>
     </div>
 
     <div class="frontal-lobe-container">
@@ -245,18 +355,46 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="mission-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()"><i data-lucide="x" width="20"></i></button>
+            
+            <h2 class="founder-title">The Founder's Note</h2>
+            <div class="founder-text">
+                <p><strong>18 to 24.</strong> They call you an adult, but the science says you're still loading. This is the <em>Frontal Lobe Gap</em>—the chaos between legal adulthood and biological maturity.</p>
+                <br>
+                <p>We are the generation navigating the most competitive landscape in history with a brain that is still under construction. The pressure to "have it figured out" is a lie. You aren't behind; you are simply in the gap.</p>
+                <br>
+                <p><strong>One84</strong> is the axis for this transition. A safe harbor for high-achievers who are tired of pretending they aren't stressed. We don't hide our age; we build on it.</p>
+            </div>
+            <div class="founder-sign">- Founder, One84</div>
+        </div>
+    </div>
+
     <script>
+        lucide.createIcons();
+
         const input = document.getElementById('email-input');
         const body = document.body;
         const form = document.getElementById('sprint-form');
         const container = document.getElementById('main-content');
         const statusMsg = document.getElementById('status-msg');
+        const modal = document.getElementById('mission-modal');
+
+        // Modal Logic
+        function openModal() { modal.classList.add('active'); }
+        function closeModal() { modal.classList.remove('active'); }
+        
+        // Close modal on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
 
         // Focus Mode
         input.addEventListener('focus', () => body.classList.add('is-focused'));
         input.addEventListener('blur', () => body.classList.remove('is-focused'));
 
-        // Typing Effect for Input
+        // Typing Effect
         input.addEventListener('input', (e) => {
             if(e.target.value.length > 0) {
                 statusMsg.style.opacity = '1';
@@ -270,28 +408,22 @@
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             body.classList.remove('is-focused');
-            input.blur(); // Remove keyboard
+            input.blur();
             
-            // 1. Change Status
             statusMsg.style.opacity = '1';
             statusMsg.innerText = "_initializing_frontal_lobe...";
             statusMsg.style.animation = "blink 0.5s infinite";
             
-            // 2. Delay for effect
             setTimeout(() => {
-                // Clear content
                 container.innerHTML = `
                     <div class="success-view">
                         <div class="big-number">84</div>
                         <div class="welcome-text">Gap Bridged. Welcome to the Axis.</div>
                     </div>
                 `;
-                
-                // Animate Progress Bar to Full
                 document.querySelector('.progress-fill').style.transition = "width 1s cubic-bezier(0.19, 1, 0.22, 1)";
                 document.querySelector('.progress-fill').style.width = "100%";
-                document.querySelector('.progress-fill').style.backgroundColor = "#8A2BE2"; // Turn purple
-                
+                document.querySelector('.progress-fill').style.backgroundColor = "#8A2BE2";
             }, 1500);
         });
     </script>
