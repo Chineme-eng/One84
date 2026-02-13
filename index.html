@@ -6,15 +6,16 @@
     <title>One84 | Mind The Gap</title>
     <link rel="icon" href="One84 Logo.png" type="image/png">
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Bodoni+Moda:ital,opsz,wght@0,6-96,400;0,6-96,600;1,6-96,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Bodoni+Moda:ital,opsz,wght@0,6-96,400;0,6-96,500;1,6-96,400&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         :root {
-            --bg: #FAFAFA;
-            --text: #1a1a1a;
+            --bg: #030303; /* Deep, luxury black/grey for contrast */
+            --text: #ffffff;
             --accent: #8A2BE2; /* Electric Violet */
-            --subtle: #a1a1aa;
+            --grid-color: rgba(255, 255, 255, 0.08);
+            --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,300 +24,278 @@
             background-color: var(--bg);
             color: var(--text);
             font-family: 'Inter', sans-serif;
-            overflow: hidden; /* No scroll, keeps it focused */
             height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* --- ATMOSPHERE --- */
-        .noise-overlay {
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        /* The Mouse "Torch" Glow */
-        .cursor-glow {
-            position: fixed;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(138, 43, 226, 0.08) 0%, rgba(255,255,255,0) 60%);
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            transition: opacity 0.5s ease;
-        }
-
-        /* --- HEADER --- */
-        header {
-            padding: 30px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            z-index: 10;
-        }
-
-        .brand-text {
-            font-family: 'Bodoni Moda', serif;
-            font-size: 20px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-        }
-
-        .social-dock {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .icon-link {
-            color: var(--text);
-            opacity: 0.4;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .icon-link:hover {
-            opacity: 1;
-            color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        /* --- MAIN CONTENT --- */
-        main {
-            flex: 1;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            padding: 0 20px;
+            perspective: 1000px; /* Essential for 3D effects */
+        }
+
+        /* --- BACKGROUND FX --- */
+        
+        /* 1. Grain Overlay */
+        .noise {
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.07'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 50;
+        }
+
+        /* 2. The Axis Grid (Moving Floor) */
+        .grid-plane {
+            position: absolute;
+            width: 200vw; height: 200vh;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            transform: rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridScroll 20s linear infinite;
+            mask-image: radial-gradient(circle at center, black 0%, transparent 70%);
+            z-index: 1;
+            transition: opacity 0.5s;
+        }
+
+        /* Grid glows when input focused */
+        body.focused .grid-plane {
+            --grid-color: rgba(138, 43, 226, 0.15); /* Turns purple */
+        }
+
+        @keyframes gridScroll {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 60px; }
+        }
+
+        /* 3. Ambient Glow */
+        .glow-spot {
+            position: absolute;
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle, rgba(138, 43, 226, 0.15) 0%, rgba(0,0,0,0) 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* --- LAYOUT --- */
+        
+        /* Header */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100;
+        }
+
+        .brand { font-family: 'Bodoni Moda', serif; font-size: 20px; letter-spacing: -0.5px; font-weight: 500; }
+
+        .socials { display: flex; gap: 24px; align-items: center; }
+        .social-link { color: rgba(255,255,255,0.5); transition: 0.3s; }
+        .social-link:hover { color: var(--accent); transform: scale(1.1); }
+
+        /* Main Container */
+        main {
+            position: relative;
             z-index: 10;
+            text-align: center;
             max-width: 600px;
-            margin: 0 auto;
+            padding: 20px;
+            transform-style: preserve-3d; /* Allows children to float 3D */
         }
 
+        /* Logo with Magnetic Float */
         .logo-container {
-            width: 140px;
-            margin-bottom: 40px;
-            transition: transform 0.5s ease;
+            width: 160px;
+            margin: 0 auto 50px;
+            position: relative;
+            transition: transform 0.1s ease-out; /* Smooth follow */
+            filter: drop-shadow(0 0 30px rgba(138, 43, 226, 0.3));
         }
-        .logo-container:hover { transform: scale(1.05); }
-        .logo-img { width: 100%; display: block; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.08)); }
+        
+        .logo-img { width: 100%; display: block; }
 
+        /* Text */
         h1 {
             font-family: 'Bodoni Moda', serif;
-            font-size: 56px;
-            font-weight: 500;
-            letter-spacing: -0.04em;
-            line-height: 1.1;
+            font-size: 64px;
+            line-height: 1;
+            font-weight: 400;
             margin-bottom: 24px;
-            color: #000;
+            letter-spacing: -0.02em;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .hero-copy {
+        .copy {
             font-size: 15px;
             line-height: 1.6;
-            color: #555;
-            font-weight: 400;
-            margin-bottom: 40px;
+            color: rgba(255,255,255,0.7);
+            font-weight: 300;
+            margin-bottom: 50px;
             max-width: 480px;
+            margin-left: auto; margin-right: auto;
         }
 
-        /* --- THE INPUT FIELD --- */
-        .form-wrapper {
+        /* The Input Field */
+        .input-box {
             position: relative;
             width: 100%;
-            max-width: 380px;
+            max-width: 360px;
+            margin: 0 auto;
         }
 
         input {
             width: 100%;
-            padding: 18px 20px;
-            border: none;
-            border-bottom: 1px solid #e5e5e5;
-            background: transparent;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
             font-family: 'Inter', sans-serif;
             font-size: 14px;
-            text-align: center;
             outline: none;
-            transition: all 0.4s ease;
-            color: var(--text);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
 
-        input::placeholder {
-            color: #ccc;
-            letter-spacing: 0.05em;
-            font-weight: 300;
-            transition: color 0.3s;
-        }
+        input::placeholder { color: rgba(255,255,255,0.3); letter-spacing: 0.1em; font-size: 12px; }
 
         input:focus {
-            border-bottom-color: var(--accent);
-            padding-bottom: 22px; /* Subtle lift */
+            background: rgba(20,20,20,0.8);
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.2);
+            transform: scale(1.05);
         }
-        input:focus::placeholder { color: transparent; }
 
-        .submit-arrow {
-            position: absolute;
-            right: 10px;
-            top: 50%;
+        /* Arrow Button inside input */
+        .enter-btn {
+            position: absolute; right: 15px; top: 50%;
             transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            opacity: 0;
-            transition: all 0.3s ease;
+            background: none; border: none;
             color: var(--accent);
+            opacity: 0; cursor: pointer;
+            transition: 0.3s;
         }
-        
-        input:not(:placeholder-shown) + .submit-arrow {
-            opacity: 1;
-            transform: translateY(-50%) translateX(0);
-        }
+        input:focus + .enter-btn, input:not(:placeholder-shown) + .enter-btn { opacity: 1; }
 
-        /* --- FOOTER / FOUNDER --- */
+        /* --- FOOTER --- */
         footer {
-            padding: 30px 40px;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            z-index: 10;
-        }
-
-        .founder-contact {
-            text-align: left;
+            position: fixed; bottom: 40px; width: 100%;
+            text-align: center;
+            z-index: 100;
         }
         
-        .founder-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--subtle);
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .founder-link {
-            font-size: 13px;
+        .founder-pill {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(5px);
             text-decoration: none;
-            color: var(--text);
-            font-weight: 500;
-            position: relative;
+            transition: 0.3s;
         }
+        .founder-pill:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
         
-        .founder-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 1px;
-            bottom: -2px;
-            left: 0;
-            background-color: var(--accent);
-            transition: width 0.3s ease;
-        }
-        .founder-link:hover::after { width: 100%; }
+        .founder-text { font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.1em; }
+        .founder-avatar { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
 
-        .copyright {
-            font-size: 10px;
-            color: var(--subtle);
-        }
+        /* Animation Classes */
+        .reveal { opacity: 0; transform: translateY(20px); animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .d-1 { animation-delay: 0.1s; }
+        .d-2 { animation-delay: 0.2s; }
+        .d-3 { animation-delay: 0.3s; }
 
-        /* --- ANIMATIONS --- */
-        .fade-in { opacity: 0; animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
     </style>
 </head>
 <body>
 
-    <div class="noise-overlay"></div>
-    <div class="cursor-glow" id="glow"></div>
+    <div class="noise"></div>
+    <div class="grid-plane"></div>
+    <div class="glow-spot"></div>
 
-    <header class="fade-in">
-        <div class="brand-text">One84</div>
-        <div class="social-dock">
-            <a href="https://instagram.com" target="_blank" class="icon-link" aria-label="Instagram"><i data-lucide="instagram" width="18"></i></a>
-            <a href="https://linkedin.com/company/one84" target="_blank" class="icon-link" aria-label="LinkedIn"><i data-lucide="linkedin" width="18"></i></a>
-            <a href="mailto:founder@one84.com" class="icon-link" aria-label="Email Founder"><i data-lucide="mail" width="18"></i></a>
+    <header class="reveal">
+        <div class="brand">One84.</div>
+        <div class="socials">
+            <a href="https://instagram.com" target="_blank" class="social-link"><i data-lucide="instagram" width="18"></i></a>
+            <a href="https://linkedin.com/company/one84" target="_blank" class="social-link"><i data-lucide="linkedin" width="18"></i></a>
         </div>
     </header>
 
-    <main>
-        <div class="logo-container fade-in delay-1">
+    <main id="tilt-zone">
+        
+        <div class="logo-container reveal d-1" id="logo">
             <img src="One84 Logo.png" alt="One84 Logo" class="logo-img">
         </div>
 
-        <h1 class="fade-in delay-2">Mind The Gap.</h1>
+        <h1 class="reveal d-2">Mind The Gap.</h1>
 
-        <div class="hero-copy fade-in delay-3">
-            Society says you're an adult at 18. Biology says 25. 
+        <div class="copy reveal d-3">
+            Society says you're an adult at 18. Biology says 25.
             <br><br>
             <strong>One84</strong> is the axis for the chaos in between. A community for high-achievers navigating the years they didn't prepare you for.
         </div>
 
-        <div class="form-wrapper fade-in delay-3">
+        <div class="input-box reveal d-3">
             <form id="join-form">
                 <input type="email" id="email" placeholder="JOIN THE AXIS" required autocomplete="off">
-                <button type="submit" class="submit-arrow"><i data-lucide="arrow-right" width="20"></i></button>
+                <button type="submit" class="enter-btn"><i data-lucide="arrow-right" width="20"></i></button>
             </form>
         </div>
+
     </main>
 
-    <footer class="fade-in delay-3">
-        <div class="founder-contact">
-            <span class="founder-label">Founder's Line</span>
-            <a href="mailto:chineme@one84.com" class="founder-link">Contact Direct</a>
-        </div>
-        <div class="copyright">
-            © 2026 One84. The 18—24 Axis.
-        </div>
+    <footer class="reveal d-3">
+        <a href="mailto:founder@one84.com" class="founder-pill">
+            <div class="founder-avatar"></div>
+            <span class="founder-text">Contact Founder</span>
+        </a>
     </footer>
 
     <script>
         lucide.createIcons();
 
-        // MOUSE GLOW EFFECT
-        const glow = document.getElementById('glow');
-        document.addEventListener('mousemove', (e) => {
-            glow.style.left = e.clientX + 'px';
-            glow.style.top = e.clientY + 'px';
-        });
-
-        // FORM HANDLING
-        const form = document.getElementById('join-form');
+        const body = document.body;
+        const tiltZone = document.getElementById('tilt-zone');
+        const logo = document.getElementById('logo');
         const input = document.getElementById('email');
-        const btn = document.querySelector('.submit-arrow');
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
+        // 1. MAGNETIC LOGO & 3D TILT
+        // Calculates mouse position relative to center and rotates elements
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.pageX) / 25;
+            const y = (window.innerHeight / 2 - e.pageY) / 25;
+
+            // Tilt the whole container slightly
+            tiltZone.style.transform = `rotateY(${x * 0.5}deg) rotateX(${y * 0.5}deg)`;
             
-            // Visual Feedback State
-            input.style.transition = "all 0.3s ease";
-            input.style.opacity = "0";
-            btn.style.opacity = "0";
-
-            setTimeout(() => {
-                input.value = "";
-                input.placeholder = "YOU ARE ON THE LIST.";
-                input.style.opacity = "1";
-                input.style.borderBottomColor = "#8A2BE2";
-                input.style.color = "#8A2BE2";
-                input.disabled = true;
-            }, 400);
+            // Move the logo more (parallax)
+            logo.style.transform = `translate(${x * -1.5}px, ${y * -1.5}px)`;
         });
+
+        // 2. FOCUS EFFECTS (Grid Glow)
+        input.addEventListener('focus', () => {
+            body.classList.add('focused');
+        });
+        input.addEventListener('blur', () => {
+            body.classList.remove('focused');
+        });
+
+        // 3. FORM SUBMISSION VISUALS
+        document.getElementById('join-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = document.querySelector('.enter-btn');
+            
+            input.style.borderColor = "#8A2BE2";
+            input.style.color = "#8A2BE2";
+            input.value = "YOU ARE ON THE LIST.";
+            btn.style.opacity = '0';
+            input.blur();
+        });
+
     </script>
 </body>
 </html>
