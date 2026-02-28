@@ -6,15 +6,15 @@
     <title>One84 | Mind The Gap</title>
     <link rel="icon" href="One84 Logo.png" type="image/png">
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         :root {
-            --bg: #FDFBF7; /* Picao AI signature cream/off-white background */
-            --text: #0F172A; /* Crisp, dark slate text */
-            --accent: #E11D48; /* Adjusting to a punchy, modern accent (Rose/Red) or keeping your preferred purple below if needed. Using a strong UI accent. */
-            --grid-color: rgba(15, 23, 42, 0.05); /* Subtle dark grid for light background */
+            --bg: #FDFBF7; /* Exact Picao Cream */
+            --text: #0F172A; /* Exact Picao Slate */
+            --accent: #8B5CF6; /* Picao Electric Violet */
+            --grid-color: rgba(139, 92, 246, 0.08); /* Subtle violet grid */
             --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
@@ -30,19 +30,17 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            perspective: 1000px; /* Essential for 3D effects */
+            perspective: 1000px;
         }
 
         /* --- BACKGROUND FX --- */
         
-        /* 1. Grain Overlay */
         .noise {
             position: fixed; inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
             pointer-events: none; z-index: 50;
         }
 
-        /* 2. The Axis Grid (Moving Floor) */
         .grid-plane {
             position: absolute;
             width: 200vw; height: 200vh;
@@ -54,12 +52,11 @@
             animation: gridScroll 20s linear infinite;
             mask-image: radial-gradient(circle at center, black 0%, transparent 70%);
             z-index: 1;
-            transition: opacity 0.5s;
+            transition: 0.5s;
         }
 
-        /* Grid glows when input focused */
         body.focused .grid-plane {
-            --grid-color: rgba(15, 23, 42, 0.12); /* Darkens slightly on focus */
+            --grid-color: rgba(139, 92, 246, 0.18); /* Intensifies on interaction */
         }
 
         @keyframes gridScroll {
@@ -67,11 +64,10 @@
             100% { background-position: 0 60px; }
         }
 
-        /* 3. Ambient Glow */
         .glow-spot {
             position: absolute;
-            width: 60vw; height: 60vw;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, rgba(253,251,247,0) 70%);
+            width: 70vw; height: 70vw;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, rgba(253,251,247,0) 70%);
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             z-index: 0;
@@ -80,7 +76,6 @@
 
         /* --- LAYOUT --- */
         
-        /* Header */
         header {
             position: fixed; top: 0; left: 0; width: 100%;
             padding: 40px;
@@ -88,53 +83,56 @@
             z-index: 100;
         }
 
-        .brand { font-family: 'Inter', sans-serif; font-size: 20px; letter-spacing: -0.5px; font-weight: 600; }
+        .brand { 
+            font-size: 20px; 
+            letter-spacing: -0.5px; 
+            font-weight: 800; 
+            color: var(--text);
+        }
 
         .socials { display: flex; gap: 24px; align-items: center; }
-        .social-link { color: rgba(15, 23, 42, 0.5); transition: 0.3s; }
-        .social-link:hover { color: var(--text); transform: scale(1.1); }
+        .social-link { color: rgba(15, 23, 42, 0.4); transition: 0.3s; }
+        .social-link:hover { color: var(--accent); transform: scale(1.1); }
 
-        /* Main Container */
         main {
             position: relative;
             z-index: 10;
             text-align: center;
             max-width: 600px;
             padding: 20px;
-            transform-style: preserve-3d; /* Allows children to float 3D */
+            transform-style: preserve-3d;
         }
 
-        /* Logo with Magnetic Float */
         .logo-container {
             width: 160px;
             margin: 0 auto 50px;
             position: relative;
-            transition: transform 0.1s ease-out; /* Smooth follow */
+            transition: transform 0.1s ease-out;
+            /* Purple glow under the logo */
+            filter: drop-shadow(0 15px 30px rgba(139, 92, 246, 0.25));
         }
         
         .logo-img { width: 100%; display: block; }
 
-        /* Text */
         h1 {
-            font-family: 'Inter', sans-serif;
             font-size: 64px;
             line-height: 1;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 24px;
-            letter-spacing: -0.04em;
+            letter-spacing: -0.05em;
+            color: var(--text);
         }
 
         .copy {
             font-size: 15px;
             line-height: 1.6;
-            color: rgba(15, 23, 42, 0.7); /* Dark grey for readability on cream */
-            font-weight: 400;
+            color: rgba(15, 23, 42, 0.7);
+            font-weight: 500;
             margin-bottom: 50px;
             max-width: 480px;
             margin-left: auto; margin-right: auto;
         }
 
-        /* The Input Field */
         .input-box {
             position: relative;
             width: 100%;
@@ -144,42 +142,39 @@
 
         input {
             width: 100%;
-            background: rgba(255, 255, 255, 0.6);
+            background: #FFFFFF;
             border: 1px solid rgba(15, 23, 42, 0.1);
-            padding: 20px;
-            border-radius: 12px;
+            padding: 22px;
+            border-radius: 16px;
             text-align: center;
             color: var(--text);
             font-family: 'Inter', sans-serif;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             outline: none;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         }
 
-        input::placeholder { color: rgba(15, 23, 42, 0.4); letter-spacing: 0.1em; font-size: 12px; }
+        input::placeholder { color: rgba(15, 23, 42, 0.3); letter-spacing: 0.1em; font-size: 11px; font-weight: 700; }
 
         input:focus {
-            background: #FFFFFF;
-            border-color: rgba(15, 23, 42, 0.3);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            transform: scale(1.05);
+            border-color: var(--accent);
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.15);
+            transform: scale(1.03);
         }
 
-        /* Arrow Button inside input */
         .enter-btn {
-            position: absolute; right: 15px; top: 50%;
+            position: absolute; right: 18px; top: 50%;
             transform: translateY(-50%);
             background: none; border: none;
-            color: var(--text);
+            color: var(--accent);
             opacity: 0; cursor: pointer;
             transition: 0.3s;
         }
         input:focus + .enter-btn, input:not(:placeholder-shown) + .enter-btn { opacity: 1; }
 
-        /* --- FOOTER --- */
         footer {
             position: fixed; bottom: 40px; width: 100%;
             text-align: center;
@@ -188,19 +183,19 @@
         
         .founder-pill {
             display: inline-flex; align-items: center; gap: 10px;
-            padding: 8px 16px;
+            padding: 10px 22px;
             border-radius: 50px;
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(15, 23, 42, 0.1);
+            background: #FFFFFF;
+            border: 1px solid rgba(15, 23, 42, 0.08);
             backdrop-filter: blur(5px);
             text-decoration: none;
             transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }
-        .founder-pill:hover { background: #FFFFFF; border-color: rgba(15, 23, 42, 0.2); }
+        .founder-pill:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(139, 92, 246, 0.1); }
         
-        .founder-text { font-size: 11px; color: rgba(15, 23, 42, 0.7); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
-        .founder-avatar { width: 6px; height: 6px; background: var(--text); border-radius: 50%; }
+        .founder-text { font-size: 11px; color: var(--text); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
+        .founder-avatar { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px var(--accent); }
 
         /* Animation Classes */
         .reveal { opacity: 0; transform: translateY(20px); animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -265,19 +260,14 @@
         const input = document.getElementById('email');
 
         // 1. MAGNETIC LOGO & 3D TILT
-        // Calculates mouse position relative to center and rotates elements
         document.addEventListener('mousemove', (e) => {
             const x = (window.innerWidth / 2 - e.pageX) / 25;
             const y = (window.innerHeight / 2 - e.pageY) / 25;
-
-            // Tilt the whole container slightly
             tiltZone.style.transform = `rotateY(${x * 0.5}deg) rotateX(${y * 0.5}deg)`;
-            
-            // Move the logo more (parallax)
             logo.style.transform = `translate(${x * -1.5}px, ${y * -1.5}px)`;
         });
 
-        // 2. FOCUS EFFECTS (Grid Glow)
+        // 2. FOCUS EFFECTS
         input.addEventListener('focus', () => {
             body.classList.add('focused');
         });
@@ -285,18 +275,16 @@
             body.classList.remove('focused');
         });
 
-        // 3. FORM SUBMISSION VISUALS
+        // 3. FORM SUBMISSION
         document.getElementById('join-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const btn = document.querySelector('.enter-btn');
-            
-            input.style.borderColor = "var(--text)";
-            input.style.color = "var(--text)";
+            input.style.borderColor = "var(--accent)";
+            input.style.color = "var(--accent)";
             input.value = "YOU ARE ON THE LIST.";
             btn.style.opacity = '0';
             input.blur();
         });
-
     </script>
 </body>
 </html>
